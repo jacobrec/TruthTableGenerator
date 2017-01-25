@@ -241,7 +241,7 @@ function latexTable(table,trees,tv) {
 	for(var i=1;i<table[0].length;i++) { // make remaining rows
 		out += mkrow(table,i)+'\\\\\r\n';
 	}
-	var begintable = '\%NOTE: requires \\usepackage{color}\r\n\\begin{tabular}{';
+	var begintable = '\%NOTE: requires \\usepackage{color}\r\n\\sffamily\r\n\\begin{tabular}{';
 	for(var i=0;i<colnum;i++) {
 		if(dividers.indexOf(i)>=0 && dividers.indexOf(i+1)>=0) {
 			begintable += ' | c'
