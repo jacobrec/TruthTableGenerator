@@ -97,7 +97,7 @@ function latexchar(c,tv) {
 
 // main construction function
 function construct() {
-	var formulas = document.getElementById('in').value.replace(/ /g,'');// remove whitespace
+	var formulas = document.getElementById('in').value.replace(/ /g,'').replace(/\[/g,'(').replace(/\]/g,')');// remove whitespace
 	if(formulas=='') {return alert("You have to enter a formula.");};
 	var r = badchar(formulas);
 	if(r>=0) {return alert("The string you entered contains the following unrecognized symbol: "+formulas[r]);};
