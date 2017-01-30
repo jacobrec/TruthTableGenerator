@@ -23,4 +23,10 @@ var cmput272 = {
         ">": "→",
         "<>": "↔"
     }
+    latex: {
+        "&": "\\wedge ",
+        "v": "\\vee ",
+        ">": "\\rightarrow ",
+        "<>": "\leftrightarrow "
+    }
 };
