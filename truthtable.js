@@ -23,7 +23,8 @@
 // THE SOFTWARE.
 /*************************************************************************************/
 
-function htmlchar(c,tv) {
+function htmlchar(c,tv,opset) {
+
 	switch(c) {
 		case true : // return char based on selected truth value style
 			switch(tv) {
@@ -37,19 +38,14 @@ function htmlchar(c,tv) {
 					case 'tf': return 'F';
 					case 'oz': return '0';
 			}
-
-		case '~' : return '~';
-		case '&' : return '&amp;';
-		case 'v' : return '&or;';
-		case '>' : return '&sub;';
-		case '<>' : return '&equiv;';
-		case '|' : return '|';
-		case '#' : return '&perp;'
-		default : return c;
+		default :
+			if (c in opset.html)
+				return opset.html[c];
+			return c;
 	}
 }
 
-function txtchar(c,tv) {
+function txtchar(c,tv,opset) {
 	switch(c) {
 		case true : // return char based on selected truth value style
 			switch(tv) {
@@ -64,11 +60,14 @@ function txtchar(c,tv) {
 					case 'oz': return '0';
 			}
 		case '' : return ' ';
-		default : return c;
+		default :
+			if (c in opset.text)
+				return opset.text[c];
+			return c;
 	}
 }
 
-function latexchar(c,tv) {
+function latexchar(c,tv,opset) {
 	switch(c) {
 		case true : // return char based on selected truth value style
 			switch(tv) {
@@ -82,14 +81,10 @@ function latexchar(c,tv) {
 					case 'tf': return 'F';
 					case 'oz': return '0';
 			}
-		case '~' : return '$\\sim$';
-		case '&' : return '$\\&$';
-		case 'v' : return '$\\lor$';
-		case '>' : return '$\\supset$';
-		case '<>' : return '$\\equiv$';
-		case '|' : return '$|$';
-		case '#' : return '$\\perp$';
-		default : return c;
+		default :
+			if (c in opset.latex)
+				return opset.latex[c];
+			return c;
 	}
 }
 
@@ -123,16 +118,25 @@ function construct() {
 
 	var table = mkTable(formulas,trees);
 
+	var opset = document.querySelector('input[name="optype"]:checked').value;
+	if (opset == "default") {
+		opset = default_set;
+	} else if (opset == "cmput272") {
+		opset = cmput272;
+	} else {
+		console.err("invalid opset");
+	}
+
 	if(full || main) {
-		var htmltable = htmlTable(table,trees,main,tv);
+		var htmltable = htmlTable(table,trees,main,tv,opset);
 		document.getElementById('tt').innerHTML = htmltable;
 	}
 	else if(text) {
-		var texttable = textTable(table,tv);
+		var texttable = textTable(table,tv,opset);
 		document.getElementById('tt').innerHTML = '<div class="center"><pre>'+texttable+'</pre></div>';
 	}
 	else if(latex) {
-		var latextable = latexTable(table,trees,tv);
+		var latextable = latexTable(table,trees,tv,opset);
 		document.getElementById('tt').innerHTML = '<pre>'+latextable+'</pre>';
 	}
 }
@@ -141,7 +145,7 @@ function construct() {
 // Takes a table (as output by mkTable), the trees it's a table of, and a boolean and
 // returns an HTML table. If the boolean is set to true, it only prints the column
 // under the main connective.
-function htmlTable(table,trees,flag,tv) {
+function htmlTable(table,trees,flag,tv,opset) {
 	var rownum = table[0].length;
 	var mcs = []; // indices of the main connectives
 	for(var i=0;i<trees.length;i++) {
@@ -159,9 +163,9 @@ function htmlTable(table,trees,flag,tv) {
 		for(var i=0;i<tbl.length;i++) { // i = table segment
 			for(var j=0;j<tbl[i][0].length;j++) { // row = 0, j = cell
 				if(j==tbl[i][0].length-1 && i!=tbl.length-1) {
-					rw += '<th>'+htmlchar(tbl[i][0][j],tv)+'</th>'+'<th class="dv"></th><th></th>';
+					rw += '<th>'+htmlchar(tbl[i][0][j],tv,opset)+'</th>'+'<th class="dv"></th><th></th>';
 				} else {
-					rw += '<th>'+htmlchar(tbl[i][0][j],tv)+'</th>';
+					rw += '<th>'+htmlchar(tbl[i][0][j],tv,opset)+'</th>';
 				}
 			}
 		}
@@ -173,11 +177,11 @@ function htmlTable(table,trees,flag,tv) {
 		for(var i=0;i<tbl.length;i++) { // i = table segment
 			for(var j=0;j<tbl[i][r].length;j++) { // r = row, j = cell
 				if(mcs[i-1]==j) {
-					rw += '<td class="mc">'+htmlchar(tbl[i][r][j],tv)+'</td>';
+					rw += '<td class="mc">'+htmlchar(tbl[i][r][j],tv,opset)+'</td>';
 				} else if(flag && i>0) {
 					rw += '<td></td>'
 				} else {
-					rw += '<td>'+htmlchar(tbl[i][r][j],tv)+'</td>';
+					rw += '<td>'+htmlchar(tbl[i][r][j],tv,opset)+'</td>';
 				}
 				if(j==tbl[i][r].length-1 && i!=tbl.length-1) {
 					rw += '<td class="dv"></td><td></td>'
@@ -190,7 +194,7 @@ function htmlTable(table,trees,flag,tv) {
 
 // Table -> String
 // Takes a table (as output by mkTable) and returns a text version of the table.
-function textTable(table,tv) {
+function textTable(table,tv, opset) {
 	var rownum = table[0].length;
 	var bcind =  []; // an array of arrays of ints, locations of biconditionals
 	for(var i=0;i<table.length;i++) {
@@ -208,7 +212,7 @@ function textTable(table,tv) {
 		var rw = '';
 		for(var i=0;i<tbl.length;i++) { // i = table segment
 			for(var j=0;j<tbl[i][r].length;j++) { // r = row, j = cell
-				rw += txtchar(tbl[i][r][j],tv)+' '; // add cell char
+				rw += txtchar(tbl[i][r][j],tv,opset)+' '; // add cell char
 				if(bcind[i].indexOf(j)>=0 && r!=0) {rw += ' ';} // add space for biconditional
 				if(j==tbl[i][r].length-1 && i!=tbl.length-1) {rw += '| ';} // add segment separator
 			}
@@ -225,7 +229,7 @@ function textTable(table,tv) {
 
 // Table -> String
 // Takes a table (as output by mkTable) and the trees its a table of and returns a LaTex version of the table.
-function latexTable(table,trees,tv) {
+function latexTable(table,trees,tv,opset) {
 	var rownum = table[0].length;
 	var mcs = []; // indices of the main connectives
 	for(var i=0;i<trees.length;i++) {
@@ -264,9 +268,9 @@ function latexTable(table,trees,tv) {
 		for(var i=0;i<tbl.length;i++) { // i = table segment
 			for(var j=0;j<tbl[i][r].length;j++) { // r = row, j = cell
 				if(mcs[i-1]==j && r!=0) {
-					rw += '\\textcolor{red}{'+latexchar(tbl[i][r][j],tv)+'} & '; // add main connective cell char
+					rw += '\\textcolor{red}{'+latexchar(tbl[i][r][j],tv,opset)+'} & '; // add main connective cell char
 				} else {
-					rw += latexchar(tbl[i][r][j],tv)+' & '; // add cell char
+					rw += latexchar(tbl[i][r][j],tv,opset)+' & '; // add cell char
 				}
 				if(r==0 && (tbl[i][r][j]=='(' || tbl[i][r][j]==')')) {
 					parloc.push(colnum+j);

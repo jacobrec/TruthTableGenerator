@@ -31,6 +31,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  -->
 
+<script src='opset.js' type="text/javascript"></script>
 <script src='truthtable.js' type="text/javascript"></script>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 
@@ -163,7 +164,12 @@ font-size:9pt;
 <input type="radio" name="tvstyle" value="tf" checked>T/F<br>
 <input type="radio" name="tvstyle" value="tb">&#8868;/&perp;<br>
 <input type="radio" name="tvstyle" value="oz">1/0<br>
+
+<div>Select Truth Operator Symbols:</div>
+<input type="radio" name="optype" value="default" checked>default<br>
+<input type="radio" name="optype" value="cmput272">cmput272<br>
 </td>
+
 
 <td style="vertical-align:top;">
 <input type="button" value="Generate Truth Table" onclick="construct();"><br><br>
