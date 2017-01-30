@@ -24,6 +24,7 @@ var cmput272 = {
         "<>": "↔"
     }
     latex: {
+        "~": "\\sim",
         "&": "\\wedge ",
         "v": "\\vee ",
         ">": "\\rightarrow ",
