@@ -24,6 +24,7 @@
 /*************************************************************************************/
 
 function htmlchar(c,tv) {
+
 	switch(c) {
 		case true : // return char based on selected truth value style
 			switch(tv) {
@@ -37,15 +38,10 @@ function htmlchar(c,tv) {
 					case 'tf': return 'F';
 					case 'oz': return '0';
 			}
-
-		case '~' : return '~';
-		case '&' : return '&amp;';
-		case 'v' : return '&or;';
-		case '>' : return '&sub;';
-		case '<>' : return '&equiv;';
-		case '|' : return '|';
-		case '#' : return '&perp;'
-		default : return c;
+		default :
+			if (c in cmput272.html)
+				return cmput272.html[c];
+			return c;
 	}
 }
 
