@@ -123,6 +123,8 @@ function construct() {
 		opset = default_set;
 	} else if (opset == "cmput272") {
 		opset = cmput272;
+	} else if (opset == "c-style") {
+		opset = lang_c;
 	} else {
 		console.err("invalid opset");
 	}
