@@ -45,7 +45,7 @@ function htmlchar(c,tv,opset) {
 	}
 }
 
-function txtchar(c,tv) {
+function txtchar(c,tv,opset) {
 	switch(c) {
 		case true : // return char based on selected truth value style
 			switch(tv) {
@@ -60,11 +60,14 @@ function txtchar(c,tv) {
 					case 'oz': return '0';
 			}
 		case '' : return ' ';
-		default : return c;
+		default :
+			if (c in opset.text)
+				return opset.text[c];
+			return c;
 	}
 }
 
-function latexchar(c,tv) {
+function latexchar(c,tv,opset) {
 	switch(c) {
 		case true : // return char based on selected truth value style
 			switch(tv) {
@@ -78,14 +81,10 @@ function latexchar(c,tv) {
 					case 'tf': return 'F';
 					case 'oz': return '0';
 			}
-		case '~' : return '$\\sim$';
-		case '&' : return '$\\&$';
-		case 'v' : return '$\\lor$';
-		case '>' : return '$\\supset$';
-		case '<>' : return '$\\equiv$';
-		case '|' : return '$|$';
-		case '#' : return '$\\perp$';
-		default : return c;
+		default :
+			if (c in opset.latex)
+				return opset.latex[c];
+			return c;
 	}
 }
 
@@ -195,7 +194,7 @@ function htmlTable(table,trees,flag,tv,opset) {
 
 // Table -> String
 // Takes a table (as output by mkTable) and returns a text version of the table.
-function textTable(table,tv) {
+function textTable(table,tv, opset) {
 	var rownum = table[0].length;
 	var bcind =  []; // an array of arrays of ints, locations of biconditionals
 	for(var i=0;i<table.length;i++) {
@@ -213,7 +212,7 @@ function textTable(table,tv) {
 		var rw = '';
 		for(var i=0;i<tbl.length;i++) { // i = table segment
 			for(var j=0;j<tbl[i][r].length;j++) { // r = row, j = cell
-				rw += txtchar(tbl[i][r][j],tv)+' '; // add cell char
+				rw += txtchar(tbl[i][r][j],tv,opset)+' '; // add cell char
 				if(bcind[i].indexOf(j)>=0 && r!=0) {rw += ' ';} // add space for biconditional
 				if(j==tbl[i][r].length-1 && i!=tbl.length-1) {rw += '| ';} // add segment separator
 			}
@@ -230,7 +229,7 @@ function textTable(table,tv) {
 
 // Table -> String
 // Takes a table (as output by mkTable) and the trees its a table of and returns a LaTex version of the table.
-function latexTable(table,trees,tv) {
+function latexTable(table,trees,tv,opset) {
 	var rownum = table[0].length;
 	var mcs = []; // indices of the main connectives
 	for(var i=0;i<trees.length;i++) {
@@ -269,9 +268,9 @@ function latexTable(table,trees,tv) {
 		for(var i=0;i<tbl.length;i++) { // i = table segment
 			for(var j=0;j<tbl[i][r].length;j++) { // r = row, j = cell
 				if(mcs[i-1]==j && r!=0) {
-					rw += '\\textcolor{red}{'+latexchar(tbl[i][r][j],tv)+'} & '; // add main connective cell char
+					rw += '\\textcolor{red}{'+latexchar(tbl[i][r][j],tv,opset)+'} & '; // add main connective cell char
 				} else {
-					rw += latexchar(tbl[i][r][j],tv)+' & '; // add cell char
+					rw += latexchar(tbl[i][r][j],tv,opset)+' & '; // add cell char
 				}
 				if(r==0 && (tbl[i][r][j]=='(' || tbl[i][r][j]==')')) {
 					parloc.push(colnum+j);

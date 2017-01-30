@@ -7,6 +7,15 @@ var default_set = {
 		'>': '&sub;',
 		'<>': '&equiv;',
 		'#': '&perp;'
+    },
+    latex: {
+        '~': '$\\sim$',
+		'&': '$\\&$',
+		'v': '$\\lor$',
+		'>': '$\\supset$',
+		'<>': '$\\equiv$',
+		'|': '$|$',
+		'#': '$\\perp$'
     }
 };
 
@@ -25,9 +34,9 @@ var cmput272 = {
     },
     latex: {
         "~": "\\sim",
-        "&": "\\wedge ",
-        "v": "\\vee ",
-        ">": "\\rightarrow ",
-        "<>": "\leftrightarrow "
+        "&": "\\wedge",
+        "v": "\\vee",
+        ">": "\\rightarrow",
+        "<>": "\leftrightarrow"
     }
 };
