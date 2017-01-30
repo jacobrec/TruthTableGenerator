@@ -119,8 +119,8 @@ function construct() {
 	var table = mkTable(formulas,trees);
 
 	var opset = document.querySelector('input[name="optype"]:checked').value;
-	if (opset == "default") {
-		opset = default_set;
+	if (opset == "phil120") {
+		opset = phil120;
 	} else if (opset == "cmput272") {
 		opset = cmput272;
 	} else if (opset == "c-style") {

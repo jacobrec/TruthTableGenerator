@@ -1,5 +1,5 @@
 
-var default_set = {
+var phil120 = {
     text: {},
     html: {
 		'&': '&amp;',
