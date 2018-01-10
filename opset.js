@@ -33,11 +33,11 @@ var cmput272 = {
         "<>": "↔"
     },
     latex: {
-        "~": "\\sim",
-        "&": "\\wedge",
-        "v": "\\vee",
-        ">": "\\rightarrow",
-        "<>": "\leftrightarrow"
+        "~": "$\\sim$",
+        "&": "$\\wedge$",
+        "v": "$\\vee$",
+        ">": "$\\rightarrow$",
+        "<>": "$\\leftrightarrow$"
     }
 };
 
